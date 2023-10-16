@@ -29,13 +29,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 error == nil else{
                 return
             }
-            let jsonModel = String(data: data,encoding: .utf8)
-            print(jsonModel)
-                
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let model = try! decoder.decode([BeerDTO].self, from: data)
+//            let jsonModel = String(data: data,encoding: .utf8)
+//            print(jsonModel)
+            print(model)
         }).resume()
     }
-
-   
-
 }
 
+struct BeerDTO:Decodable {
+    let id: Int
+    let name: String
+    let tagline:String
+    let imageUrl: URL
+    
+}
