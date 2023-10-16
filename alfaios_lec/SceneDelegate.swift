@@ -16,10 +16,33 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = ViewController() // Your initial view controller.
         window.makeKeyAndVisible()
+        window.backgroundColor = .green
+    
         self.window = window
+                
+        let url:URL = URL(string: "https://api.punkapi.com/v2/beers")!
+        URLSession.shared.dataTask(with: url, completionHandler: {
+            data,response,error in
+            guard
+                let data,
+                let response,
+                error == nil else{
+                return
+            }
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
+            let model = try! decoder.decode([BeerDTO].self, from: data)
+//            let jsonModel = String(data: data,encoding: .utf8)
+//            print(jsonModel)
+            print(model)
+        }).resume()
     }
-
-   
-
 }
 
+struct BeerDTO:Decodable {
+    let id: Int
+    let name: String
+    let tagline:String
+    let imageUrl: URL
+    
+}
